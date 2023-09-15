@@ -27,10 +27,20 @@ class Client
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Emprunt::class, orphanRemoval: true)]
     private Collection $Emprunts;
 
-    public function __construct()
+    public function hydrate (array $vals){
+        foreach ($vals as $cle => $valeur){
+            if (isset ($vals[$cle])){
+                $nomSet = "set" . ucfirst($cle);
+                $this->$nomSet ($valeur);
+            }
+        }
+    }
+    public function __construct(array $init=[])
     {
+        $this->hydrate($init);
         $this->Emprunts = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
